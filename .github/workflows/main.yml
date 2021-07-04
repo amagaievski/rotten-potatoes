@@ -15,11 +15,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
-
+  CI:
+    runs-on: ubuntu-latess
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
@@ -37,3 +34,18 @@ jobs:
           tags: |
             am8i/rotten-potatoes:latest
             am8i/rotten-potatoes:${{ github.run_number }}
+            
+  CD:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Azure Kubernetes set context
+        uses: Azure/aks-set-context@v1.1
+        with:
+          # Azure credentials i.e. output of `az ad sp create-for-rbac --sdk-auth`
+          creds: ${{ secrets.AZURE_K8S_CREDENTIALS }} 
+          # Resource Group Name
+          resource-group: RG01
+          # AKS Cluster Name
+          cluster-name: test01
+      
